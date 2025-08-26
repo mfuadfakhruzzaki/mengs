@@ -5,6 +5,11 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import {
+    Sheet,
+    SheetContent,
+    SheetTrigger,
+} from '@/components/ui/sheet';
+import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
@@ -89,10 +94,41 @@ export default function TugasPage() {
       </aside>
       <div className="flex flex-col sm:gap-4 sm:py-4 sm:pl-64">
         <header className="sticky top-0 z-30 flex h-14 items-center gap-4 border-b bg-background px-4 sm:static sm:h-auto sm:border-0 sm:bg-transparent sm:px-6">
-          <Button size="icon" variant="outline" className="sm:hidden">
-            <PanelLeft className="h-5 w-5" />
-            <span className="sr-only">Toggle Menu</span>
-          </Button>
+          <Sheet>
+              <SheetTrigger asChild>
+                  <Button size="icon" variant="outline" className="sm:hidden">
+                      <PanelLeft className="h-5 w-5" />
+                      <span className="sr-only">Toggle Menu</span>
+                  </Button>
+              </SheetTrigger>
+              <SheetContent side="left" className="sm:max-w-xs">
+                  <nav className="grid gap-6 text-lg font-medium">
+                      <Link
+                          href="/"
+                          className="group flex h-10 w-10 shrink-0 items-center justify-center gap-2 rounded-full bg-primary text-lg font-semibold text-primary-foreground md:text-base"
+                      >
+                          <GraduationCap className="h-5 w-5 transition-all group-hover:scale-110" />
+                          <span className="sr-only">Mengs</span>
+                      </Link>
+                      <Link href="/" className="flex items-center gap-4 px-2.5 text-muted-foreground hover:text-foreground">
+                          <Home className="h-5 w-5" />
+                          Dashboard
+                      </Link>
+                      <Link href="/semester" className="flex items-center gap-4 px-2.5 text-muted-foreground hover:text-foreground">
+                          <Book className="h-5 w-5" />
+                          Semester
+                      </Link>
+                      <Link href="/tugas" className="flex items-center gap-4 px-2.5 text-foreground">
+                          <ListTodo className="h-5 w-5" />
+                          Tugas
+                      </Link>
+                      <Link href="/kalender" className="flex items-center gap-4 px-2.5 text-muted-foreground hover:text-foreground">
+                          <Calendar className="h-5 w-5" />
+                          Kalender
+                      </Link>
+                  </nav>
+              </SheetContent>
+          </Sheet>
           <div className="relative ml-auto flex-1 md:grow-0">
             <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
             <Input
