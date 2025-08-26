@@ -166,8 +166,8 @@ function AddTaskForm({ onOpenChange }: { onOpenChange: (open: boolean) => void }
             control={form.control}
             name="dueDate"
             render={({ field }) => (
-              <FormItem className="flex flex-col">
-                <FormLabel>Tenggat Waktu</FormLabel>
+              <FormItem>
+                <FormLabel className="pb-1.5 block">Tenggat Waktu</FormLabel>
                 <Popover>
                   <PopoverTrigger asChild>
                     <FormControl>
