@@ -213,7 +213,7 @@ function AddTaskForm({ onOpenChange }: { onOpenChange: (open: boolean) => void }
           )}
         />
         <div className="grid grid-cols-2 gap-4">
-          <FormField
+           <FormField
             control={form.control}
             name="dueDate"
             render={({ field }) => (
@@ -801,7 +801,7 @@ export default function DashboardPage() {
                         <Card>
                             <CardHeader>
                                 <CardTitle>Manajemen Mata Kuliah</CardTitle>
-                                <CardDescription>Kelola semester dan mata kuliah Anda.</CardDescription>
+                                <CardDescription>Kelola semester dan mata kuliah Anda. Klik sebuah mata kuliah untuk melihat detailnya.</CardDescription>
                             </CardHeader>
                             <CardContent>
                                 <Accordion type="single" collapsible className="w-full">
@@ -814,19 +814,18 @@ export default function DashboardPage() {
                                                 </div>
                                                 <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
                                                 {semester.courses.map((course) => (
-                                                    <Card key={course.id}>
-                                                        <CardHeader className="flex flex-row items-center justify-between pb-2">
-                                                            <CardTitle className="text-base font-medium">{course.name}</CardTitle>
-                                                            <Book className="h-4 w-4 text-muted-foreground" />
-                                                        </CardHeader>
-                                                        <CardContent>
-                                                            <div className="text-sm text-muted-foreground">{course.code} &middot; {course.credits} SKS</div>
-                                                            <div className="text-sm text-muted-foreground">{course.lecturer}</div>
-                                                        </CardContent>
-                                                        <CardFooter>
-                                                            <UploadMaterialDialog courseName={course.name} />
-                                                        </CardFooter>
-                                                    </Card>
+                                                    <Link key={course.id} href={`/matkul/${course.id}`} className="block">
+                                                        <Card className="hover:bg-muted/50 transition-colors">
+                                                            <CardHeader className="flex flex-row items-center justify-between pb-2">
+                                                                <CardTitle className="text-base font-medium">{course.name}</CardTitle>
+                                                                <Book className="h-4 w-4 text-muted-foreground" />
+                                                            </CardHeader>
+                                                            <CardContent>
+                                                                <div className="text-sm text-muted-foreground">{course.code} &middot; {course.credits} SKS</div>
+                                                                <div className="text-sm text-muted-foreground">{course.lecturer}</div>
+                                                            </CardContent>
+                                                        </Card>
+                                                    </Link>
                                                 ))}
                                                 </div>
                                             </AccordionContent>
