@@ -22,18 +22,38 @@ import {
   Home,
   ListTodo,
   PanelLeft,
-  PlusCircle,
   Search,
   Settings,
-  GraduationCap
+  GraduationCap,
+  CheckCircle2,
+  Clock
 } from 'lucide-react';
+import { format } from 'date-fns';
+import { id } from 'date-fns/locale';
 
 import { UserNav } from '@/components/user-nav';
 import { ThemeToggle } from '@/components/theme-toggle';
 import Link from 'next/link';
 
+// Mock data for events
+const mockEvents = [
+  { date: new Date(2024, 6, 25), title: 'Quiz 1: Intro to AI', course: 'Kecerdasan Buatan' },
+  { date: new Date(2024, 6, 25), title: 'Submit Laporan Praktikum', course: 'Struktur Data' },
+  { date: new Date(2024, 6, 27), title: 'Presentasi Proyek', course: 'Rekayasa Perangkat Lunak' },
+  { date: new Date(), title: 'Tugas Harian Kalkulus', course: 'Kalkulus Lanjut' },
+  { date: new Date(), title: 'Diskusi Kelompok', course: 'Manajemen Proyek' },
+];
+
+
 export default function KalenderPage() {
     const [date, setDate] = React.useState<Date | undefined>(new Date())
+
+    const selectedDayEvents = React.useMemo(() => {
+        if (!date) return [];
+        return mockEvents.filter(
+          (event) => event.date.toDateString() === date.toDateString()
+        );
+    }, [date]);
 
   return (
     <div className="flex min-h-screen w-full flex-col bg-muted/40">
@@ -154,16 +174,49 @@ export default function KalenderPage() {
                         <p className="text-muted-foreground">Lihat semua tenggat waktu dan jadwal penting.</p>
                     </div>
                 </div>
-                <Card>
-                    <CardContent className="pt-6">
-                       <CalendarComponent
-                            mode="single"
-                            selected={date}
-                            onSelect={setDate}
-                            className="rounded-md border w-full"
-                        />
-                    </CardContent>
-                </Card>
+                <div className="grid md:grid-cols-2 gap-8 items-start">
+                    <Card>
+                        <CardContent className="pt-6">
+                           <CalendarComponent
+                                mode="single"
+                                selected={date}
+                                onSelect={setDate}
+                                className="rounded-md border w-full"
+                            />
+                        </CardContent>
+                    </Card>
+                     <Card>
+                        <CardHeader>
+                            <CardTitle>
+                                Agenda untuk {date ? format(date, "d MMMM yyyy", { locale: id }) : '...' }
+                            </CardTitle>
+                            <CardDescription>Tugas dan acara yang dijadwalkan untuk hari ini.</CardDescription>
+                        </CardHeader>
+                        <CardContent>
+                            {selectedDayEvents.length > 0 ? (
+                                <div className="space-y-4">
+                                    {selectedDayEvents.map((event, index) => (
+                                        <div key={index} className="flex items-start gap-4">
+                                             <div className="bg-primary/10 text-primary p-2 rounded-full">
+                                                <Clock className="h-5 w-5" />
+                                            </div>
+                                            <div>
+                                                <p className="font-semibold">{event.title}</p>
+                                                <p className="text-sm text-muted-foreground">{event.course}</p>
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+                            ) : (
+                                <div className="text-center py-10">
+                                    <CheckCircle2 className="mx-auto h-12 w-12 text-green-500" />
+                                    <p className="mt-4 text-muted-foreground">Tidak ada agenda untuk hari ini.</p>
+                                    <p className="text-sm text-muted-foreground">Santai sejenak!</p>
+                                </div>
+                            )}
+                        </CardContent>
+                    </Card>
+                </div>
             </div>
         </main>
       </div>
