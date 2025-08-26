@@ -176,7 +176,7 @@ function AddTaskForm({ onOpenChange }: { onOpenChange: (open: boolean) => void }
           )}
         />
         <div className="grid grid-cols-2 gap-4">
-          <FormField
+           <FormField
             control={form.control}
             name="dueDate"
             render={({ field }) => (
@@ -455,7 +455,9 @@ export default function TugasPage() {
                                       <TableBody>
                                           {tasks.map(task => (
                                               <TableRow key={task.id}>
-                                                  <TableCell className="font-medium">{task.name}</TableCell>
+                                                  <TableCell className="font-medium">
+                                                    <Link href={`/tugas/${task.id}`} className="hover:underline">{task.name}</Link>
+                                                  </TableCell>
                                                   <TableCell>{task.course}</TableCell>
                                                   <TableCell>{task.due}</TableCell>
                                                   <TableCell>
@@ -501,7 +503,7 @@ export default function TugasPage() {
                                     <Card key={task.id} className="p-4">
                                       <div className="flex justify-between items-start">
                                         <div className="flex-1">
-                                            <p className="font-medium">{task.name}</p>
+                                            <Link href={`/tugas/${task.id}`} className="font-medium hover:underline">{task.name}</Link>
                                             <p className="text-sm text-muted-foreground">{task.course}</p>
                                         </div>
                                         <DropdownMenu>

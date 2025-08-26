@@ -286,7 +286,9 @@ export default function CourseDetailPage({ params }: { params: { matkulId: strin
                                     </p>
                                 </CardContent>
                                 <CardFooter className="flex justify-end">
-                                    <Button variant="outline">Lihat Detail</Button>
+                                    <Link href={`/tugas/${task.id}`}>
+                                        <Button variant="outline">Lihat Detail</Button>
+                                    </Link>
                                 </CardFooter>
                                 </Card>
                             ))}
@@ -428,4 +430,3 @@ export default function CourseDetailPage({ params }: { params: { matkulId: strin
     </div>
   );
 }
-
