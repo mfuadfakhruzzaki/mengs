@@ -279,35 +279,6 @@ function AddTaskDialog() {
   );
 }
 
-function UploadFileDialog({ taskName }: { taskName: string }) {
-    const [open, setOpen] = React.useState(false);
-    return (
-      <Dialog open={open} onOpenChange={setOpen}>
-        <DialogTrigger asChild>
-          <Button variant="outline" size="sm"><FileUp className="mr-2 h-4 w-4"/>Upload File</Button>
-        </DialogTrigger>
-        <DialogContent className="sm:max-w-[480px]">
-          <DialogHeader>
-            <DialogTitle>Upload Lampiran</DialogTitle>
-            <DialogDescription>
-              Upload file untuk tugas: <span className="font-semibold">{taskName}</span>
-            </DialogDescription>
-          </DialogHeader>
-          <div className="grid gap-4 py-4">
-            <div className="grid w-full max-w-sm items-center gap-1.5">
-              <Label htmlFor="file">File</Label>
-              <Input id="file" type="file" />
-            </div>
-          </div>
-          <DialogFooter>
-            <DialogClose asChild><Button type="button" variant="secondary">Batal</Button></DialogClose>
-            <Button type="submit"><Upload className="mr-2 h-4 w-4" />Upload</Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
-    );
-}
-
 export default function TugasPage() {
   return (
     <div className="flex min-h-screen w-full flex-col bg-muted/40">
@@ -448,7 +419,6 @@ export default function TugasPage() {
                                               <TableHead>Tenggat</TableHead>
                                               <TableHead>Prioritas</TableHead>
                                               <TableHead>Status</TableHead>
-                                              <TableHead>Lampiran</TableHead>
                                               <TableHead><span className="sr-only">Aksi</span></TableHead>
                                           </TableRow>
                                       </TableHeader>
@@ -474,9 +444,6 @@ export default function TugasPage() {
                                                               <SelectItem value="Done">Done</SelectItem>
                                                           </SelectContent>
                                                       </Select>
-                                                  </TableCell>
-                                                   <TableCell>
-                                                      <UploadFileDialog taskName={task.name} />
                                                   </TableCell>
                                                   <TableCell>
                                                       <DropdownMenu>
@@ -543,7 +510,6 @@ export default function TugasPage() {
                                                 </SelectContent>
                                             </Select>
                                           </div>
-                                          <UploadFileDialog taskName={task.name} />
                                        </div>
                                     </Card>
                                   ))}

@@ -487,64 +487,6 @@ function AddSemesterDialog() {
     );
 }
 
-function UploadFileDialog({ taskName }: { taskName: string }) {
-    const [open, setOpen] = React.useState(false);
-    return (
-      <Dialog open={open} onOpenChange={setOpen}>
-        <DialogTrigger asChild>
-          <Button variant="outline" size="sm"><FileUp className="mr-2 h-4 w-4"/>Upload File</Button>
-        </DialogTrigger>
-        <DialogContent className="sm:max-w-[480px]">
-          <DialogHeader>
-            <DialogTitle>Upload Lampiran Tugas</DialogTitle>
-            <DialogDescription>
-              Upload file untuk tugas: <span className="font-semibold">{taskName}</span>
-            </DialogDescription>
-          </DialogHeader>
-          <div className="grid gap-4 py-4">
-            <div className="grid w-full max-w-sm items-center gap-1.5">
-              <Label htmlFor="file">File</Label>
-              <Input id="file" type="file" />
-            </div>
-          </div>
-          <DialogFooter>
-            <DialogClose asChild><Button type="button" variant="secondary">Batal</Button></DialogClose>
-            <Button type="submit"><Upload className="mr-2 h-4 w-4" />Upload</Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
-    );
-}
-
-function UploadMaterialDialog({ courseName }: { courseName: string }) {
-    const [open, setOpen] = React.useState(false);
-    return (
-      <Dialog open={open} onOpenChange={setOpen}>
-        <DialogTrigger asChild>
-          <Button variant="outline" size="sm"><FileUp className="mr-2 h-4 w-4"/>Upload Materi</Button>
-        </DialogTrigger>
-        <DialogContent className="sm:max-w-[480px]">
-          <DialogHeader>
-            <DialogTitle>Upload Materi Kuliah</DialogTitle>
-            <DialogDescription>
-              Upload materi, catatan, atau file lainnya untuk mata kuliah: <span className="font-semibold">{courseName}</span>
-            </DialogDescription>
-          </DialogHeader>
-          <div className="grid gap-4 py-4">
-            <div className="grid w-full max-w-sm items-center gap-1.5">
-              <Label htmlFor="material-file">File</Label>
-              <Input id="material-file" type="file" />
-            </div>
-          </div>
-          <DialogFooter>
-            <DialogClose asChild><Button type="button" variant="secondary">Batal</Button></DialogClose>
-            <Button type="submit"><Upload className="mr-2 h-4 w-4" />Upload</Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
-    );
-}
-
 
 export default function DashboardPage() {
   return (
@@ -696,7 +638,6 @@ export default function DashboardPage() {
                                               <TableHead>Tenggat</TableHead>
                                               <TableHead>Prioritas</TableHead>
                                               <TableHead>Status</TableHead>
-                                              <TableHead>Lampiran</TableHead>
                                               <TableHead><span className="sr-only">Aksi</span></TableHead>
                                           </TableRow>
                                       </TableHeader>
@@ -720,9 +661,6 @@ export default function DashboardPage() {
                                                               <SelectItem value="Done">Done</SelectItem>
                                                           </SelectContent>
                                                       </Select>
-                                                  </TableCell>
-                                                  <TableCell>
-                                                      <UploadFileDialog taskName={task.name} />
                                                   </TableCell>
                                                   <TableCell>
                                                       <DropdownMenu>
@@ -789,7 +727,6 @@ export default function DashboardPage() {
                                                 </SelectContent>
                                             </Select>
                                           </div>
-                                          <UploadFileDialog taskName={task.name} />
                                        </div>
                                     </Card>
                                   ))}
