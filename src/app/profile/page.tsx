@@ -21,17 +21,18 @@ import {
   Home,
   ListTodo,
   PanelLeft,
-  PlusCircle,
   Search,
   Settings,
-  GraduationCap
+  GraduationCap,
+  User
 } from 'lucide-react';
 
 import { UserNav } from '@/components/user-nav';
 import { ThemeToggle } from '@/components/theme-toggle';
 import Link from 'next/link';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 
-export default function TugasPage() {
+export default function ProfilePage() {
   return (
     <div className="flex min-h-screen w-full flex-col bg-muted/40">
       <aside className="fixed inset-y-0 left-0 z-10 hidden w-60 flex-col border-r bg-background sm:flex">
@@ -60,7 +61,7 @@ export default function TugasPage() {
               </Link>
               <Link
                 href="/tugas"
-                className="flex items-center gap-3 rounded-lg bg-sidebar-accent px-3 py-2 text-sidebar-accent-foreground transition-all hover:bg-sidebar-accent/90"
+                className="flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-foreground"
               >
                 <ListTodo className="h-4 w-4" />
                 Tugas
@@ -118,7 +119,7 @@ export default function TugasPage() {
                           <Book className="h-5 w-5" />
                           Semester
                       </Link>
-                      <Link href="/tugas" className="flex items-center gap-4 px-2.5 text-foreground">
+                      <Link href="/tugas" className="flex items-center gap-4 px-2.5 text-muted-foreground hover:text-foreground">
                           <ListTodo className="h-5 w-5" />
                           Tugas
                       </Link>
@@ -137,7 +138,7 @@ export default function TugasPage() {
             <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
             <Input
               type="search"
-              placeholder="Cari tugas..."
+              placeholder="Cari..."
               className="w-full rounded-lg bg-background pl-8 md:w-[200px] lg:w-[336px]"
             />
           </div>
@@ -147,28 +148,30 @@ export default function TugasPage() {
             <div className="mx-auto grid w-full max-w-6xl gap-2">
                 <div className="flex items-center mb-4">
                     <div>
-                        <h1 className="text-3xl font-bold font-headline">Manajemen Tugas</h1>
-                        <p className="text-muted-foreground">Kelola semua tugas Anda di sini.</p>
-                    </div>
-                    <div className="ml-auto flex items-center gap-2">
-                        <Button size="sm" className="h-8 gap-1">
-                            <PlusCircle className="h-3.5 w-3.5" />
-                            <span className="sr-only sm:not-sr-only sm:whitespace-nowrap">
-                                Tambah Tugas
-                            </span>
-                        </Button>
+                        <h1 className="text-3xl font-bold font-headline">Profil Pengguna</h1>
+                        <p className="text-muted-foreground">Lihat dan kelola informasi profil Anda.</p>
                     </div>
                 </div>
                 <Card>
-                    <CardHeader>
-                        <CardTitle>Daftar Tugas</CardTitle>
-                        <CardDescription>Lihat dan kelola tugas yang harus dikerjakan.</CardDescription>
-                    </CardHeader>
-                    <CardContent>
-                        <div className="text-center py-10">
-                            <p className="text-muted-foreground">Belum ada tugas. Silakan tambahkan tugas baru.</p>
-                        </div>
-                    </CardContent>
+                  <CardHeader>
+                      <CardTitle>Informasi Akun</CardTitle>
+                      <CardDescription>Detail akun Anda yang terhubung.</CardDescription>
+                  </CardHeader>
+                  <CardContent className="space-y-6">
+                      <div className="flex items-center gap-4">
+                          <Avatar className="h-20 w-20">
+                              <AvatarImage src="/avatars/01.png" alt="User Avatar" data-ai-hint="user avatar" />
+                              <AvatarFallback>SC</AvatarFallback>
+                          </Avatar>
+                          <div>
+                              <p className="text-xl font-semibold">Student</p>
+                              <p className="text-muted-foreground">student@example.com</p>
+                          </div>
+                      </div>
+                      <div>
+                        <Button>Ubah Foto Profil</Button>
+                      </div>
+                  </CardContent>
                 </Card>
             </div>
         </main>

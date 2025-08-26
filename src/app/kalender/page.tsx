@@ -82,7 +82,7 @@ export default function KalenderPage() {
             <Tooltip>
               <TooltipTrigger asChild>
                 <Link
-                  href="#"
+                  href="/settings"
                   className="flex h-9 w-9 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:text-foreground md:h-8 md:w-8"
                 >
                   <Settings className="h-5 w-5" />
@@ -128,6 +128,10 @@ export default function KalenderPage() {
                       <Link href="/kalender" className="flex items-center gap-4 px-2.5 text-foreground">
                           <Calendar className="h-5 w-5" />
                           Kalender
+                      </Link>
+                      <Link href="/settings" className="flex items-center gap-4 px-2.5 text-muted-foreground hover:text-foreground">
+                          <Settings className="h-5 w-5" />
+                          Settings
                       </Link>
                   </nav>
               </SheetContent>
