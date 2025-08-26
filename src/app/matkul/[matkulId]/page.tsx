@@ -7,7 +7,6 @@ import {
   Calendar,
   ChevronLeft,
   File,
-  FileUp,
   Home,
   ListTodo,
   MoreVertical,
@@ -44,7 +43,7 @@ import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, Di
 import { Label } from '@/components/ui/label';
 
 // Mock data - In a real app, you would fetch this based on matkulId
-const course = { 
+const initialCourse = { 
     id: 'cs101', 
     name: 'Introduction to Computer Science', 
     code: 'CS 101', 
@@ -97,6 +96,25 @@ function UploadMaterialDialog({ courseName }: { courseName: string }) {
 }
 
 export default function CourseDetailPage({ params }: { params: { matkulId: string } }) {
+  const [isEditing, setIsEditing] = React.useState(false);
+  const [course, setCourse] = React.useState(initialCourse);
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setCourse(prev => ({ ...prev, [name]: name === 'credits' ? parseInt(value) || 0 : value }));
+  };
+
+  const handleSave = () => {
+    // In a real app, you'd probably send this data to a server
+    console.log("Saving course:", course);
+    setIsEditing(false);
+  };
+
+  const handleCancel = () => {
+    setCourse(initialCourse); // Reset to original data
+    setIsEditing(false);
+  }
+
   return (
     <div className="flex min-h-screen w-full flex-col bg-muted/40">
       <aside className="fixed inset-y-0 left-0 z-10 hidden w-60 flex-col border-r bg-background sm:flex">
@@ -111,7 +129,7 @@ export default function CourseDetailPage({ params }: { params: { matkulId: strin
             <div className='w-full'>
               <Link
                 href="/"
-                className="flex items-center gap-3 rounded-lg bg-sidebar-accent px-3 py-2 text-sidebar-accent-foreground transition-all hover:bg-sidebar-accent/90"
+                className="flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-foreground"
               >
                 <Home className="h-4 w-4" />
                 Dashboard
@@ -175,7 +193,7 @@ export default function CourseDetailPage({ params }: { params: { matkulId: strin
                           <GraduationCap className="h-5 w-5 transition-all group-hover:scale-110" />
                           <span className="sr-only">Mengs</span>
                       </Link>
-                      <Link href="/" className="flex items-center gap-4 px-2.5 text-foreground">
+                      <Link href="/" className="flex items-center gap-4 px-2.5 text-muted-foreground hover:text-foreground">
                           <Home className="h-5 w-5" />
                           Dashboard
                       </Link>
@@ -217,14 +235,26 @@ export default function CourseDetailPage({ params }: { params: { matkulId: strin
                   <span className="sr-only">Back</span>
                 </Button>
               </Link>
-              <h1 className="flex-1 shrink-0 whitespace-nowrap text-xl font-semibold tracking-tight sm:grow-0">
-                {course.name}
-              </h1>
+                {isEditing ? (
+                    <Input name="name" value={course.name} onChange={handleInputChange} className="text-xl font-semibold tracking-tight" />
+                ) : (
+                    <h1 className="flex-1 shrink-0 whitespace-nowrap text-xl font-semibold tracking-tight sm:grow-0">
+                        {course.name}
+                    </h1>
+                )}
               <div className="hidden items-center gap-2 md:ml-auto md:flex">
-                <Button variant="outline" size="sm">
-                  Edit
-                </Button>
-                <Button size="sm">Simpan</Button>
+                {isEditing ? (
+                    <>
+                        <Button variant="outline" size="sm" onClick={handleCancel}>
+                            Batal
+                        </Button>
+                        <Button size="sm" onClick={handleSave}>Simpan</Button>
+                    </>
+                ) : (
+                    <Button variant="outline" size="sm" onClick={() => setIsEditing(true)}>
+                        Edit
+                    </Button>
+                )}
               </div>
             </div>
             <div className="grid gap-4 md:grid-cols-[1fr_250px] lg:grid-cols-3 lg:gap-8">
@@ -350,27 +380,47 @@ export default function CourseDetailPage({ params }: { params: { matkulId: strin
                     <CardTitle>Detail Mata Kuliah</CardTitle>
                   </CardHeader>
                   <CardContent className="grid gap-4">
-                    <div className="flex items-center justify-between">
-                      <span className="text-muted-foreground">Kode</span>
-                      <span>{course.code}</span>
+                    <div className="grid grid-cols-2 items-center gap-2">
+                      <Label htmlFor="code" className="text-muted-foreground">Kode</Label>
+                      {isEditing ? (
+                        <Input name="code" id="code" value={course.code} onChange={handleInputChange} className="h-8" />
+                      ) : (
+                        <span className="text-right">{course.code}</span>
+                      )}
                     </div>
-                    <div className="flex items-center justify-between">
-                      <span className="text-muted-foreground">SKS</span>
-                      <span>{course.credits}</span>
+                    <div className="grid grid-cols-2 items-center gap-2">
+                      <Label htmlFor="credits" className="text-muted-foreground">SKS</Label>
+                       {isEditing ? (
+                        <Input name="credits" id="credits" type="number" value={course.credits} onChange={handleInputChange} className="h-8" />
+                      ) : (
+                        <span className="text-right">{course.credits}</span>
+                      )}
                     </div>
-                    <div className="flex items-center justify-between">
-                      <span className="text-muted-foreground">Dosen</span>
-                      <span>{course.lecturer}</span>
+                    <div className="grid grid-cols-2 items-center gap-2">
+                      <Label htmlFor="lecturer" className="text-muted-foreground">Dosen</Label>
+                       {isEditing ? (
+                        <Input name="lecturer" id="lecturer" value={course.lecturer} onChange={handleInputChange} className="h-8" />
+                      ) : (
+                        <span className="text-right">{course.lecturer}</span>
+                      )}
                     </div>
                   </CardContent>
                 </Card>
               </div>
             </div>
             <div className="flex items-center justify-center gap-2 md:hidden">
-              <Button variant="outline" size="sm">
-                Discard
-              </Button>
-              <Button size="sm">Save Product</Button>
+                 {isEditing ? (
+                    <>
+                        <Button variant="outline" size="sm" onClick={handleCancel}>
+                            Batal
+                        </Button>
+                        <Button size="sm" onClick={handleSave}>Simpan</Button>
+                    </>
+                ) : (
+                    <Button variant="outline" size="sm" onClick={() => setIsEditing(true)}>
+                        Edit
+                    </Button>
+                )}
             </div>
           </div>
         </main>
@@ -378,3 +428,4 @@ export default function CourseDetailPage({ params }: { params: { matkulId: strin
     </div>
   );
 }
+
