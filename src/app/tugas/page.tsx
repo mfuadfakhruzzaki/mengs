@@ -167,7 +167,7 @@ function AddTaskForm({ onOpenChange }: { onOpenChange: (open: boolean) => void }
             name="dueDate"
             render={({ field }) => (
               <FormItem>
-                <FormLabel className="pb-1.5 block">Tenggat Waktu</FormLabel>
+                <FormLabel className="block pb-2">Tenggat Waktu</FormLabel>
                 <Popover>
                   <PopoverTrigger asChild>
                     <FormControl>
@@ -208,7 +208,7 @@ function AddTaskForm({ onOpenChange }: { onOpenChange: (open: boolean) => void }
             name="priority"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Prioritas</FormLabel>
+                <FormLabel className="block pb-2">Prioritas</FormLabel>
                  <Select onValueChange={field.onChange} defaultValue={field.value}>
                   <FormControl>
                     <SelectTrigger>
@@ -405,3 +405,5 @@ export default function TugasPage() {
     </div>
   );
 }
+
+    

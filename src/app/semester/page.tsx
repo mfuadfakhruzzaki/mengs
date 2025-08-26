@@ -24,12 +24,130 @@ import {
   PlusCircle,
   Search,
   Settings,
-  GraduationCap
+  GraduationCap,
+  Check
 } from 'lucide-react';
+import { 
+  Dialog, 
+  DialogContent, 
+  DialogDescription, 
+  DialogHeader, 
+  DialogTitle, 
+  DialogTrigger,
+  DialogFooter,
+  DialogClose
+} from '@/components/ui/dialog';
+import { 
+  Form, 
+  FormControl, 
+  FormField, 
+  FormItem, 
+  FormLabel, 
+  FormMessage 
+} from "@/components/ui/form";
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import * as z from 'zod';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
 import { UserNav } from '@/components/user-nav';
 import { ThemeToggle } from '@/components/theme-toggle';
 import Link from 'next/link';
+
+const AddSemesterFormSchema = z.object({
+  name: z.string().min(1, "Nama semester tidak boleh kosong."),
+  year: z.string().min(1, "Tahun ajaran tidak boleh kosong."),
+  period: z.enum(['Ganjil', 'Genap', 'Pendek']),
+});
+
+function AddSemesterForm({ onOpenChange }: { onOpenChange: (open: boolean) => void }) {
+    const form = useForm<z.infer<typeof AddSemesterFormSchema>>({
+      resolver: zodResolver(AddSemesterFormSchema),
+    });
+  
+    function onSubmit(values: z.infer<typeof AddSemesterFormSchema>) {
+      console.log(values);
+      onOpenChange(false);
+      form.reset();
+    }
+  
+    return (
+      <Form {...form}>
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+          <FormField
+            control={form.control}
+            name="name"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Nama Semester</FormLabel>
+                <FormControl><Input placeholder="Contoh: Semester 3" {...field} /></FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+           <FormField
+            control={form.control}
+            name="year"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Tahun Ajaran</FormLabel>
+                <FormControl><Input placeholder="Contoh: 2024/2025" {...field} /></FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="period"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Periode</FormLabel>
+                <Select onValueChange={field.onChange} defaultValue={field.value}>
+                  <FormControl><SelectTrigger><SelectValue placeholder="Pilih periode" /></SelectTrigger></FormControl>
+                  <SelectContent>
+                    <SelectItem value="Ganjil">Ganjil</SelectItem>
+                    <SelectItem value="Genap">Genap</SelectItem>
+                    <SelectItem value="Pendek">Pendek</SelectItem>
+                  </SelectContent>
+                </Select>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <DialogFooter className="pt-4">
+            <DialogClose asChild><Button type="button" variant="secondary">Batal</Button></DialogClose>
+            <Button type="submit"><Check className="mr-2 h-4 w-4" />Simpan</Button>
+          </DialogFooter>
+        </form>
+      </Form>
+    );
+}
+
+function AddSemesterDialog() {
+    const [open, setOpen] = React.useState(false);
+    return (
+      <Dialog open={open} onOpenChange={setOpen}>
+        <DialogTrigger asChild>
+          <Button size="sm" className="h-8 gap-1">
+              <PlusCircle className="h-3.5 w-3.5" />
+              <span className="sr-only sm:not-sr-only sm:whitespace-nowrap">
+                  Tambah Semester
+              </span>
+          </Button>
+        </DialogTrigger>
+        <DialogContent className="sm:max-w-[480px]">
+          <DialogHeader>
+            <DialogTitle>Semester Baru</DialogTitle>
+            <DialogDescription>
+              Buat semester baru untuk mengelompokkan mata kuliah.
+            </DialogDescription>
+          </DialogHeader>
+          <AddSemesterForm onOpenChange={setOpen} />
+        </DialogContent>
+      </Dialog>
+    );
+}
+
 
 export default function SemesterPage() {
   return (
@@ -151,12 +269,7 @@ export default function SemesterPage() {
                         <p className="text-muted-foreground">Kelola semua semester Anda di sini.</p>
                     </div>
                     <div className="ml-auto flex items-center gap-2">
-                        <Button size="sm" className="h-8 gap-1">
-                            <PlusCircle className="h-3.5 w-3.5" />
-                            <span className="sr-only sm:not-sr-only sm:whitespace-nowrap">
-                                Tambah Semester
-                            </span>
-                        </Button>
+                        <AddSemesterDialog />
                     </div>
                 </div>
                 <Card>
@@ -176,3 +289,5 @@ export default function SemesterPage() {
     </div>
   );
 }
+
+    

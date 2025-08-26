@@ -93,18 +93,18 @@ const semesters = [
     id: 'sem1',
     name: 'Fall 2024',
     courses: [
-      { id: 'cs101', name: 'Introduction to Computer Science', code: 'CS 101', credits: 3 },
-      { id: 'ma201', name: 'Calculus II', code: 'MA 201', credits: 4 },
-      { id: 'ph202', name: 'University Physics I', code: 'PH 202', credits: 4 },
+      { id: 'cs101', name: 'Introduction to Computer Science', code: 'CS 101', credits: 3, lecturer: "Dr. Smith" },
+      { id: 'ma201', name: 'Calculus II', code: 'MA 201', credits: 4, lecturer: "Dr. Jones" },
+      { id: 'ph202', name: 'University Physics I', code: 'PH 202', credits: 4, lecturer: "Dr. Williams" },
     ],
   },
   {
     id: 'sem2',
     name: 'Spring 2025',
     courses: [
-        { id: 'cs201', name: 'Data Structures', code: 'CS 201', credits: 3 },
-        { id: 'ee201', name: 'Digital Logic Design', code: 'EE 201', credits: 3 },
-        { id: 'wr150', name: 'Academic Writing', code: 'WR 150', credits: 4 },
+        { id: 'cs201', name: 'Data Structures', code: 'CS 201', credits: 3, lecturer: "Dr. Brown" },
+        { id: 'ee201', name: 'Digital Logic Design', code: 'EE 201', credits: 3, lecturer: "Dr. Davis" },
+        { id: 'wr150', name: 'Academic Writing', code: 'WR 150', credits: 4, lecturer: "Dr. Miller" },
     ],
   },
 ];
@@ -119,13 +119,25 @@ const tasks = [
 
 const allCourses = semesters.flatMap(s => s.courses);
 
-
 const AddTaskFormSchema = z.object({
   title: z.string().min(1, "Judul tidak boleh kosong."),
   description: z.string().optional(),
   courseId: z.string().min(1, "Mata kuliah harus dipilih."),
   dueDate: z.date({ required_error: "Tanggal tenggat harus diisi."}),
   priority: z.enum(['High', 'Medium', 'Low']),
+});
+
+const AddCourseFormSchema = z.object({
+  name: z.string().min(1, "Nama mata kuliah tidak boleh kosong."),
+  code: z.string().min(1, "Kode mata kuliah tidak boleh kosong."),
+  credits: z.coerce.number().min(1, "SKS harus diisi."),
+  lecturer: z.string().min(1, "Nama dosen tidak boleh kosong."),
+});
+
+const AddSemesterFormSchema = z.object({
+  name: z.string().min(1, "Nama semester tidak boleh kosong."),
+  year: z.string().min(1, "Tahun ajaran tidak boleh kosong."),
+  period: z.enum(['Ganjil', 'Genap', 'Pendek']),
 });
 
 
@@ -205,7 +217,7 @@ function AddTaskForm({ onOpenChange }: { onOpenChange: (open: boolean) => void }
             name="dueDate"
             render={({ field }) => (
               <FormItem>
-                <FormLabel className="pb-1.5 block">Tenggat Waktu</FormLabel>
+                <FormLabel className="block pb-2">Tenggat Waktu</FormLabel>
                 <Popover>
                   <PopoverTrigger asChild>
                     <FormControl>
@@ -246,7 +258,7 @@ function AddTaskForm({ onOpenChange }: { onOpenChange: (open: boolean) => void }
             name="priority"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Prioritas</FormLabel>
+                <FormLabel className="block pb-2">Prioritas</FormLabel>
                  <Select onValueChange={field.onChange} defaultValue={field.value}>
                   <FormControl>
                     <SelectTrigger>
@@ -301,6 +313,177 @@ function AddTaskDialog() {
       </DialogContent>
     </Dialog>
   );
+}
+
+function AddCourseForm({ onOpenChange }: { onOpenChange: (open: boolean) => void }) {
+    const form = useForm<z.infer<typeof AddCourseFormSchema>>({
+      resolver: zodResolver(AddCourseFormSchema),
+      defaultValues: { name: '', code: '', credits: 0, lecturer: '' },
+    });
+  
+    function onSubmit(values: z.infer<typeof AddCourseFormSchema>) {
+      console.log(values);
+      onOpenChange(false);
+      form.reset();
+    }
+  
+    return (
+      <Form {...form}>
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+          <FormField
+            control={form.control}
+            name="name"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Nama Mata Kuliah</FormLabel>
+                <FormControl><Input placeholder="Contoh: Kalkulus Lanjut" {...field} /></FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="code"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Kode</FormLabel>
+                <FormControl><Input placeholder="Contoh: MA2101" {...field} /></FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+           <FormField
+            control={form.control}
+            name="credits"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>SKS</FormLabel>
+                <FormControl><Input type="number" placeholder="3" {...field} /></FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+           <FormField
+            control={form.control}
+            name="lecturer"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Dosen</FormLabel>
+                <FormControl><Input placeholder="Contoh: Dr. Jane Doe" {...field} /></FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <DialogFooter className="pt-4">
+            <DialogClose asChild><Button type="button" variant="secondary">Batal</Button></DialogClose>
+            <Button type="submit"><Check className="mr-2 h-4 w-4" />Simpan</Button>
+          </DialogFooter>
+        </form>
+      </Form>
+    );
+  }
+
+function AddCourseDialog() {
+    const [open, setOpen] = React.useState(false);
+    return (
+      <Dialog open={open} onOpenChange={setOpen}>
+        <DialogTrigger asChild>
+          <Button size="sm" variant="outline"><PlusCircle className="mr-2 h-4 w-4" />Tambah Matkul</Button>
+        </DialogTrigger>
+        <DialogContent className="sm:max-w-[480px]">
+          <DialogHeader>
+            <DialogTitle>Mata Kuliah Baru</DialogTitle>
+            <DialogDescription>
+              Isi detail mata kuliah baru.
+            </DialogDescription>
+          </DialogHeader>
+          <AddCourseForm onOpenChange={setOpen} />
+        </DialogContent>
+      </Dialog>
+    );
+}
+
+function AddSemesterForm({ onOpenChange }: { onOpenChange: (open: boolean) => void }) {
+    const form = useForm<z.infer<typeof AddSemesterFormSchema>>({
+      resolver: zodResolver(AddSemesterFormSchema),
+    });
+  
+    function onSubmit(values: z.infer<typeof AddSemesterFormSchema>) {
+      console.log(values);
+      onOpenChange(false);
+      form.reset();
+    }
+  
+    return (
+      <Form {...form}>
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+          <FormField
+            control={form.control}
+            name="name"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Nama Semester</FormLabel>
+                <FormControl><Input placeholder="Contoh: Semester 3" {...field} /></FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+           <FormField
+            control={form.control}
+            name="year"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Tahun Ajaran</FormLabel>
+                <FormControl><Input placeholder="Contoh: 2024/2025" {...field} /></FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="period"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Periode</FormLabel>
+                <Select onValueChange={field.onChange} defaultValue={field.value}>
+                  <FormControl><SelectTrigger><SelectValue placeholder="Pilih periode" /></SelectTrigger></FormControl>
+                  <SelectContent>
+                    <SelectItem value="Ganjil">Ganjil</SelectItem>
+                    <SelectItem value="Genap">Genap</SelectItem>
+                    <SelectItem value="Pendek">Pendek</SelectItem>
+                  </SelectContent>
+                </Select>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <DialogFooter className="pt-4">
+            <DialogClose asChild><Button type="button" variant="secondary">Batal</Button></DialogClose>
+            <Button type="submit"><Check className="mr-2 h-4 w-4" />Simpan</Button>
+          </DialogFooter>
+        </form>
+      </Form>
+    );
+}
+
+function AddSemesterDialog() {
+    const [open, setOpen] = React.useState(false);
+    return (
+      <Dialog open={open} onOpenChange={setOpen}>
+        <DialogTrigger asChild>
+           <Button className="mt-4"><PlusCircle className="mr-2 h-4 w-4"/>Tambah Semester</Button>
+        </DialogTrigger>
+        <DialogContent className="sm:max-w-[480px]">
+          <DialogHeader>
+            <DialogTitle>Semester Baru</DialogTitle>
+            <DialogDescription>
+              Buat semester baru untuk mengelompokkan mata kuliah.
+            </DialogDescription>
+          </DialogHeader>
+          <AddSemesterForm onOpenChange={setOpen} />
+        </DialogContent>
+      </Dialog>
+    );
 }
 
 
@@ -561,7 +744,7 @@ export default function DashboardPage() {
                                             <AccordionTrigger className="text-lg font-headline">{semester.name}</AccordionTrigger>
                                             <AccordionContent>
                                                 <div className="flex justify-end mb-2">
-                                                    <Button size="sm" variant="outline"><PlusCircle className="mr-2 h-4 w-4"/>Tambah Matkul</Button>
+                                                    <AddCourseDialog />
                                                 </div>
                                                 <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
                                                 {semester.courses.map((course) => (
@@ -572,6 +755,7 @@ export default function DashboardPage() {
                                                         </CardHeader>
                                                         <CardContent>
                                                             <div className="text-sm text-muted-foreground">{course.code} &middot; {course.credits} SKS</div>
+                                                            <div className="text-sm text-muted-foreground">{course.lecturer}</div>
                                                         </CardContent>
                                                     </Card>
                                                 ))}
@@ -580,7 +764,7 @@ export default function DashboardPage() {
                                         </AccordionItem>
                                     ))}
                                 </Accordion>
-                                 <Button className="mt-4"><PlusCircle className="mr-2 h-4 w-4"/>Tambah Semester</Button>
+                                <AddSemesterDialog />
                             </CardContent>
                         </Card>
                     </TabsContent>
@@ -591,3 +775,5 @@ export default function DashboardPage() {
     </div>
   );
 }
+
+    
