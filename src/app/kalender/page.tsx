@@ -65,14 +65,14 @@ export default function KalenderPage() {
               </Link>
               <Link
                 href="/kalender"
-                className="flex items-center gap-3 rounded-lg bg-primary px-3 py-2 text-primary-foreground transition-all hover:bg-primary/90"
+                className="flex items-center gap-3 rounded-lg bg-sidebar-accent px-3 py-2 text-sidebar-accent-foreground transition-all hover:bg-sidebar-accent/90"
               >
                 <Calendar className="h-4 w-4" />
                 Kalender
               </Link>
             </div>
         </nav>
-        <nav className="mt-auto flex flex-col items-center gap-4 px-2 sm:py-5">
+        <nav className="mt-auto flex flex-row items-center justify-center gap-4 px-2 sm:py-5">
           <TooltipProvider>
             <Tooltip>
               <TooltipTrigger asChild>
