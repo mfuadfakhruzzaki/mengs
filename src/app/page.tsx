@@ -91,7 +91,7 @@ export default function DashboardPage() {
       <aside className="fixed inset-y-0 left-0 z-10 hidden w-60 flex-col border-r bg-background sm:flex">
         <nav className="flex flex-col items-start gap-4 px-4 sm:py-5">
             <Link
-                href="#"
+                href="/"
                 className="group flex h-9 w-full shrink-0 items-center justify-start gap-2 rounded-full bg-primary px-3 text-lg font-semibold text-primary-foreground md:h-8 md:text-base"
                 >
                 <GraduationCap className="h-5 w-5 transition-all group-hover:scale-110" />
@@ -99,29 +99,29 @@ export default function DashboardPage() {
             </Link>
             <div className='w-full'>
               <Link
-                href="#"
+                href="/"
                 className="flex items-center gap-3 rounded-lg bg-primary px-3 py-2 text-primary-foreground transition-all hover:bg-primary/90"
               >
                 <Home className="h-4 w-4" />
                 Dashboard
               </Link>
               <Link
-                href="#"
-                className="flex items-center gap-3 rounded-lg px-3 py-2 text-foreground transition-all hover:bg-muted"
+                href="/semester"
+                className="flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-foreground"
               >
                 <Book className="h-4 w-4" />
                 Semester
               </Link>
               <Link
-                href="#"
-                className="flex items-center gap-3 rounded-lg px-3 py-2 text-foreground transition-all hover:bg-muted"
+                href="/tugas"
+                className="flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-foreground"
               >
                 <ListTodo className="h-4 w-4" />
                 Tugas
               </Link>
               <Link
-                href="#"
-                className="flex items-center gap-3 rounded-lg px-3 py-2 text-foreground transition-all hover:bg-muted"
+                href="/kalender"
+                className="flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-foreground"
               >
                 <Calendar className="h-4 w-4" />
                 Kalender
