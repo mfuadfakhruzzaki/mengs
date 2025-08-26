@@ -196,57 +196,106 @@ export default function DashboardPage() {
                                 <CardDescription>Semua tugas Anda di satu tempat. Tetap terorganisir dan selesaikan pekerjaan Anda.</CardDescription>
                             </CardHeader>
                             <CardContent>
-                                <Table>
-                                    <TableHeader>
-                                        <TableRow>
-                                            <TableHead>Tugas</TableHead>
-                                            <TableHead>Mata Kuliah</TableHead>
-                                            <TableHead>Tenggat</TableHead>
-                                            <TableHead>Prioritas</TableHead>
-                                            <TableHead>Status</TableHead>
-                                            <TableHead><span className="sr-only">Aksi</span></TableHead>
-                                        </TableRow>
-                                    </TableHeader>
-                                    <TableBody>
-                                        {tasks.map(task => (
-                                            <TableRow key={task.id}>
-                                                <TableCell className="font-medium">{task.name}</TableCell>
-                                                <TableCell>{task.course}</TableCell>
-                                                <TableCell>{task.due}</TableCell>
-                                                <TableCell>
-                                                    <span className={`px-2 py-1 text-xs rounded-full ${task.priority === 'High' ? 'bg-red-200 text-red-800 dark:bg-red-900 dark:text-red-200' : task.priority === 'Medium' ? 'bg-yellow-200 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200' : 'bg-green-200 text-green-800 dark:bg-green-900 dark:text-green-200'}`}>{task.priority}</span>
-                                                </TableCell>
-                                                <TableCell>
-                                                    <Select defaultValue={task.status}>
-                                                        <SelectTrigger className="w-[120px] h-8 text-xs">
-                                                            <SelectValue />
-                                                        </SelectTrigger>
-                                                        <SelectContent>
-                                                            <SelectItem value="Todo">Todo</SelectItem>
-                                                            <SelectItem value="In Progress">In Progress</SelectItem>
-                                                            <SelectItem value="Done">Done</SelectItem>
-                                                        </SelectContent>
-                                                    </Select>
-                                                </TableCell>
-                                                <TableCell>
-                                                    <DropdownMenu>
-                                                        <DropdownMenuTrigger asChild>
-                                                            <Button variant="ghost" className="h-8 w-8 p-0">
-                                                                <span className="sr-only">Buka menu</span>
-                                                                <MoreVertical className="h-4 w-4" />
-                                                            </Button>
-                                                        </DropdownMenuTrigger>
-                                                        <DropdownMenuContent align="end">
-                                                            <DropdownMenuItem>Edit</DropdownMenuItem>
-                                                            <DropdownMenuItem>Tandai Selesai</DropdownMenuItem>
-                                                            <DropdownMenuItem className="text-red-600">Hapus</DropdownMenuItem>
-                                                        </DropdownMenuContent>
-                                                    </DropdownMenu>
-                                                </TableCell>
-                                            </TableRow>
-                                        ))}
-                                    </TableBody>
-                                </Table>
+                                <div className="hidden md:block">
+                                  <Table>
+                                      <TableHeader>
+                                          <TableRow>
+                                              <TableHead>Tugas</TableHead>
+                                              <TableHead>Mata Kuliah</TableHead>
+                                              <TableHead>Tenggat</TableHead>
+                                              <TableHead>Prioritas</TableHead>
+                                              <TableHead>Status</TableHead>
+                                              <TableHead><span className="sr-only">Aksi</span></TableHead>
+                                          </TableRow>
+                                      </TableHeader>
+                                      <TableBody>
+                                          {tasks.map(task => (
+                                              <TableRow key={task.id}>
+                                                  <TableCell className="font-medium">{task.name}</TableCell>
+                                                  <TableCell>{task.course}</TableCell>
+                                                  <TableCell>{task.due}</TableCell>
+                                                  <TableCell>
+                                                      <span className={`px-2 py-1 text-xs rounded-full ${task.priority === 'High' ? 'bg-red-200 text-red-800 dark:bg-red-900 dark:text-red-200' : task.priority === 'Medium' ? 'bg-yellow-200 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200' : 'bg-green-200 text-green-800 dark:bg-green-900 dark:text-green-200'}`}>{task.priority}</span>
+                                                  </TableCell>
+                                                  <TableCell>
+                                                      <Select defaultValue={task.status}>
+                                                          <SelectTrigger className="w-[120px] h-8 text-xs">
+                                                              <SelectValue />
+                                                          </SelectTrigger>
+                                                          <SelectContent>
+                                                              <SelectItem value="Todo">Todo</SelectItem>
+                                                              <SelectItem value="In Progress">In Progress</SelectItem>
+                                                              <SelectItem value="Done">Done</SelectItem>
+                                                          </SelectContent>
+                                                      </Select>
+                                                  </TableCell>
+                                                  <TableCell>
+                                                      <DropdownMenu>
+                                                          <DropdownMenuTrigger asChild>
+                                                              <Button variant="ghost" className="h-8 w-8 p-0">
+                                                                  <span className="sr-only">Buka menu</span>
+                                                                  <MoreVertical className="h-4 w-4" />
+                                                              </Button>
+                                                          </DropdownMenuTrigger>
+                                                          <DropdownMenuContent align="end">
+                                                              <DropdownMenuItem>Edit</DropdownMenuItem>
+                                                              <DropdownMenuItem>Tandai Selesai</DropdownMenuItem>
+                                                              <DropdownMenuItem className="text-red-600">Hapus</DropdownMenuItem>
+                                                          </DropdownMenuContent>
+                                                      </DropdownMenu>
+                                                  </TableCell>
+                                              </TableRow>
+                                          ))}
+                                      </TableBody>
+                                  </Table>
+                                </div>
+                                <div className="grid gap-4 md:hidden">
+                                  {tasks.map((task) => (
+                                    <Card key={task.id} className="p-4">
+                                      <div className="flex justify-between items-start">
+                                        <div className="flex-1">
+                                            <p className="font-medium">{task.name}</p>
+                                            <p className="text-sm text-muted-foreground">{task.course}</p>
+                                        </div>
+                                        <DropdownMenu>
+                                            <DropdownMenuTrigger asChild>
+                                                <Button variant="ghost" className="h-8 w-8 p-0">
+                                                    <span className="sr-only">Buka menu</span>
+                                                    <MoreVertical className="h-4 w-4" />
+                                                </Button>
+                                            </DropdownMenuTrigger>
+                                            <DropdownMenuContent align="end">
+                                                <DropdownMenuItem>Edit</DropdownMenuItem>
+                                                <DropdownMenuItem>Tandai Selesai</DropdownMenuItem>
+                                                <DropdownMenuItem className="text-red-600">Hapus</DropdownMenuItem>
+                                            </DropdownMenuContent>
+                                        </DropdownMenu>
+                                      </div>
+                                      <div className="flex items-center justify-between mt-4 text-sm">
+                                        <div>
+                                          <p className="text-muted-foreground">Tenggat</p>
+                                          <p>{task.due}</p>
+                                        </div>
+                                        <div>
+                                          <p className="text-muted-foreground">Prioritas</p>
+                                          <span className={`px-2 py-1 text-xs rounded-full ${task.priority === 'High' ? 'bg-red-200 text-red-800 dark:bg-red-900 dark:text-red-200' : task.priority === 'Medium' ? 'bg-yellow-200 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200' : 'bg-green-200 text-green-800 dark:bg-green-900 dark:text-green-200'}`}>{task.priority}</span>
+                                        </div>
+                                        <div className="w-28">
+                                          <Select defaultValue={task.status}>
+                                              <SelectTrigger className="h-8 text-xs">
+                                                  <SelectValue />
+                                              </SelectTrigger>
+                                              <SelectContent>
+                                                  <SelectItem value="Todo">Todo</SelectItem>
+                                                  <SelectItem value="In Progress">In Progress</SelectItem>
+                                                  <SelectItem value="Done">Done</SelectItem>
+                                              </SelectContent>
+                                          </Select>
+                                        </div>
+                                      </div>
+                                    </Card>
+                                  ))}
+                                </div>
                             </CardContent>
                         </Card>
                     </TabsContent>
