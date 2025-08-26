@@ -227,6 +227,7 @@ export default function DashboardPage() {
           <UserNav />
         </header>
         <main className="grid flex-1 items-start gap-4 p-4 sm:px-6 sm:py-0 md:gap-8">
+          <div className="mx-auto grid w-full max-w-6xl gap-2">
             <Tabs defaultValue="overview">
                 <div className="flex items-center">
                     <TabsList>
@@ -477,6 +478,7 @@ export default function DashboardPage() {
                   </Card>
                 </TabsContent>
             </Tabs>
+          </div>
         </main>
       </div>
     </div>
