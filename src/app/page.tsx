@@ -45,7 +45,7 @@ import {
 } from '@/components/ui/tooltip';
 import {
   Book,
-  Calendar,
+  Calendar as CalendarIcon,
   Home,
   ListTodo,
   MoreVertical,
@@ -54,8 +54,35 @@ import {
   Search,
   Settings,
   Upload,
-  GraduationCap
+  GraduationCap,
+  Check
 } from 'lucide-react';
+import { 
+  Dialog, 
+  DialogContent, 
+  DialogDescription, 
+  DialogHeader, 
+  DialogTitle, 
+  DialogTrigger,
+  DialogFooter,
+  DialogClose
+} from '@/components/ui/dialog';
+import { 
+  Form, 
+  FormControl, 
+  FormField, 
+  FormItem, 
+  FormLabel, 
+  FormMessage 
+} from "@/components/ui/form";
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import * as z from 'zod';
+import { Textarea } from '@/components/ui/textarea';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { Calendar } from '@/components/ui/calendar';
+import { cn } from '@/lib/utils';
+import { format } from 'date-fns';
 
 import { UserNav } from '@/components/user-nav';
 import { ThemeToggle } from '@/components/theme-toggle';
@@ -89,6 +116,193 @@ const tasks = [
     { id: 't4', name: 'Project Proposal', course: 'Data Structures', due: '2024-10-01', priority: 'High', status: 'Todo' },
     { id: 't5', name: 'Midterm Exam Prep', course: 'Calculus II', due: '2024-10-15', priority: 'Low', status: 'Done' },
 ];
+
+const allCourses = semesters.flatMap(s => s.courses);
+
+
+const AddTaskFormSchema = z.object({
+  title: z.string().min(1, "Judul tidak boleh kosong."),
+  description: z.string().optional(),
+  courseId: z.string().min(1, "Mata kuliah harus dipilih."),
+  dueDate: z.date({ required_error: "Tanggal tenggat harus diisi."}),
+  priority: z.enum(['High', 'Medium', 'Low']),
+});
+
+
+function AddTaskForm({ onOpenChange }: { onOpenChange: (open: boolean) => void }) {
+  const form = useForm<z.infer<typeof AddTaskFormSchema>>({
+    resolver: zodResolver(AddTaskFormSchema),
+    defaultValues: {
+      title: '',
+      description: '',
+      priority: 'Medium',
+    },
+  });
+
+  function onSubmit(values: z.infer<typeof AddTaskFormSchema>) {
+    console.log(values);
+    // TODO: Handle form submission
+    onOpenChange(false);
+    form.reset();
+  }
+
+  return (
+    <Form {...form}>
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+        <FormField
+          control={form.control}
+          name="title"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Judul Tugas</FormLabel>
+              <FormControl>
+                <Input placeholder="Contoh: Laporan Praktikum 1" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="courseId"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Mata Kuliah</FormLabel>
+              <Select onValueChange={field.onChange} defaultValue={field.value}>
+                <FormControl>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Pilih mata kuliah" />
+                  </SelectTrigger>
+                </FormControl>
+                <SelectContent>
+                  {allCourses.map(course => (
+                    <SelectItem key={course.id} value={course.id}>
+                      {course.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="description"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Deskripsi</FormLabel>
+              <FormControl>
+                <Textarea placeholder="Detail tugas, instruksi, dll." className="resize-none" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <div className="grid grid-cols-2 gap-4">
+          <FormField
+            control={form.control}
+            name="dueDate"
+            render={({ field }) => (
+              <FormItem className="flex flex-col">
+                <FormLabel>Tenggat Waktu</FormLabel>
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <FormControl>
+                      <Button
+                        variant={"outline"}
+                        className={cn(
+                          "w-full pl-3 text-left font-normal",
+                          !field.value && "text-muted-foreground"
+                        )}
+                      >
+                        {field.value ? (
+                          format(field.value, "PPP")
+                        ) : (
+                          <span>Pilih tanggal</span>
+                        )}
+                        <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                      </Button>
+                    </FormControl>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-auto p-0" align="start">
+                    <Calendar
+                      mode="single"
+                      selected={field.value}
+                      onSelect={field.onChange}
+                      disabled={(date) =>
+                        date < new Date(new Date().setHours(0,0,0,0))
+                      }
+                      initialFocus
+                    />
+                  </PopoverContent>
+                </Popover>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="priority"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Prioritas</FormLabel>
+                 <Select onValueChange={field.onChange} defaultValue={field.value}>
+                  <FormControl>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Pilih prioritas" />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    <SelectItem value="High">Tinggi</SelectItem>
+                    <SelectItem value="Medium">Sedang</SelectItem>
+                    <SelectItem value="Low">Rendah</SelectItem>
+                  </SelectContent>
+                </Select>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </div>
+        <DialogFooter className="pt-4">
+          <DialogClose asChild>
+            <Button type="button" variant="secondary">Batal</Button>
+          </DialogClose>
+          <Button type="submit">
+            <Check className="mr-2 h-4 w-4" />
+            Simpan
+          </Button>
+        </DialogFooter>
+      </form>
+    </Form>
+  )
+}
+
+function AddTaskDialog() {
+  const [open, setOpen] = React.useState(false);
+  return (
+    <Dialog open={open} onOpenChange={setOpen}>
+      <DialogTrigger asChild>
+          <Button size="sm" className="h-8 gap-1">
+              <PlusCircle className="h-3.5 w-3.5" />
+              <span className="sr-only sm:not-sr-only sm:whitespace-nowrap">
+                  Tambah Tugas
+              </span>
+          </Button>
+      </DialogTrigger>
+      <DialogContent className="sm:max-w-[480px]">
+        <DialogHeader>
+          <DialogTitle>Tugas Baru</DialogTitle>
+          <DialogDescription>
+            Isi detail tugas baru Anda. Klik simpan jika sudah selesai.
+          </DialogDescription>
+        </DialogHeader>
+        <AddTaskForm onOpenChange={setOpen} />
+      </DialogContent>
+    </Dialog>
+  );
+}
+
 
 export default function DashboardPage() {
   return (
@@ -128,7 +342,7 @@ export default function DashboardPage() {
                 href="/kalender"
                 className="flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-foreground"
               >
-                <Calendar className="h-4 w-4" />
+                <CalendarIcon className="h-4 w-4" />
                 Kalender
               </Link>
             </div>
@@ -182,7 +396,7 @@ export default function DashboardPage() {
                         Tugas
                     </Link>
                     <Link href="/kalender" className="flex items-center gap-4 px-2.5 text-muted-foreground hover:text-foreground">
-                        <Calendar className="h-5 w-5" />
+                        <CalendarIcon className="h-5 w-5" />
                         Kalender
                     </Link>
                     <Link href="/settings" className="flex items-center gap-4 px-2.5 text-muted-foreground hover:text-foreground">
@@ -216,12 +430,7 @@ export default function DashboardPage() {
                                 Import Jadwal
                             </span>
                         </Button>
-                        <Button size="sm" className="h-8 gap-1">
-                            <PlusCircle className="h-3.5 w-3.5" />
-                            <span className="sr-only sm:not-sr-only sm:whitespace-nowrap">
-                                Tambah Tugas
-                            </span>
-                        </Button>
+                        <AddTaskDialog />
                     </div>
                 </div>
                 <Tabs defaultValue="tasks">
