@@ -55,7 +55,8 @@ import {
   Settings,
   Upload,
   GraduationCap,
-  Check
+  Check,
+  FileUp,
 } from 'lucide-react';
 import { 
   Dialog, 
@@ -87,6 +88,7 @@ import { format } from 'date-fns';
 import { UserNav } from '@/components/user-nav';
 import { ThemeToggle } from '@/components/theme-toggle';
 import Link from 'next/link';
+import { Label } from '@/components/ui/label';
 
 const semesters = [
   {
@@ -139,7 +141,6 @@ const AddSemesterFormSchema = z.object({
   year: z.string().min(1, "Tahun ajaran tidak boleh kosong."),
   period: z.enum(['Ganjil', 'Genap', 'Pendek']),
 });
-
 
 function AddTaskForm({ onOpenChange }: { onOpenChange: (open: boolean) => void }) {
   const form = useForm<z.infer<typeof AddTaskFormSchema>>({
@@ -217,7 +218,7 @@ function AddTaskForm({ onOpenChange }: { onOpenChange: (open: boolean) => void }
             name="dueDate"
             render={({ field }) => (
               <FormItem>
-                <FormLabel className="block pb-2">Tenggat Waktu</FormLabel>
+                <FormLabel className="block pb-2.5">Tenggat Waktu</FormLabel>
                 <Popover>
                   <PopoverTrigger asChild>
                     <FormControl>
@@ -258,7 +259,7 @@ function AddTaskForm({ onOpenChange }: { onOpenChange: (open: boolean) => void }
             name="priority"
             render={({ field }) => (
               <FormItem>
-                <FormLabel className="block pb-2">Prioritas</FormLabel>
+                <FormLabel className="block pb-2.5">Prioritas</FormLabel>
                  <Select onValueChange={field.onChange} defaultValue={field.value}>
                   <FormControl>
                     <SelectTrigger>
@@ -486,6 +487,35 @@ function AddSemesterDialog() {
     );
 }
 
+function UploadFileDialog({ taskName }: { taskName: string }) {
+    const [open, setOpen] = React.useState(false);
+    return (
+      <Dialog open={open} onOpenChange={setOpen}>
+        <DialogTrigger asChild>
+          <Button variant="outline" size="sm"><FileUp className="mr-2 h-4 w-4"/>Upload File</Button>
+        </DialogTrigger>
+        <DialogContent className="sm:max-w-[480px]">
+          <DialogHeader>
+            <DialogTitle>Upload Lampiran</DialogTitle>
+            <DialogDescription>
+              Upload file untuk tugas: <span className="font-semibold">{taskName}</span>
+            </DialogDescription>
+          </DialogHeader>
+          <div className="grid gap-4 py-4">
+            <div className="grid w-full max-w-sm items-center gap-1.5">
+              <Label htmlFor="file">File</Label>
+              <Input id="file" type="file" />
+            </div>
+          </div>
+          <DialogFooter>
+            <DialogClose asChild><Button type="button" variant="secondary">Batal</Button></DialogClose>
+            <Button type="submit"><Upload className="mr-2 h-4 w-4" />Upload</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+    );
+}
+
 
 export default function DashboardPage() {
   return (
@@ -637,6 +667,7 @@ export default function DashboardPage() {
                                               <TableHead>Tenggat</TableHead>
                                               <TableHead>Prioritas</TableHead>
                                               <TableHead>Status</TableHead>
+                                              <TableHead>Lampiran</TableHead>
                                               <TableHead><span className="sr-only">Aksi</span></TableHead>
                                           </TableRow>
                                       </TableHeader>
@@ -660,6 +691,9 @@ export default function DashboardPage() {
                                                               <SelectItem value="Done">Done</SelectItem>
                                                           </SelectContent>
                                                       </Select>
+                                                  </TableCell>
+                                                  <TableCell>
+                                                      <UploadFileDialog taskName={task.name} />
                                                   </TableCell>
                                                   <TableCell>
                                                       <DropdownMenu>
@@ -712,19 +746,22 @@ export default function DashboardPage() {
                                           <p className="text-muted-foreground">Prioritas</p>
                                           <span className={`px-2 py-1 text-xs rounded-full ${task.priority === 'High' ? 'bg-red-200 text-red-800 dark:bg-red-900 dark:text-red-200' : task.priority === 'Medium' ? 'bg-yellow-200 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200' : 'bg-green-200 text-green-800 dark:bg-green-900 dark:text-green-200'}`}>{task.priority}</span>
                                         </div>
-                                        <div className="w-28">
-                                          <Select defaultValue={task.status}>
-                                              <SelectTrigger className="h-8 text-xs">
-                                                  <SelectValue />
-                                              </SelectTrigger>
-                                              <SelectContent>
-                                                  <SelectItem value="Todo">Todo</SelectItem>
-                                                  <SelectItem value="In Progress">In Progress</SelectItem>
-                                                  <SelectItem value="Done">Done</SelectItem>
-                                              </SelectContent>
-                                          </Select>
-                                        </div>
                                       </div>
+                                       <div className="flex items-center justify-between mt-4">
+                                          <div className="w-28">
+                                            <Select defaultValue={task.status}>
+                                                <SelectTrigger className="h-8 text-xs">
+                                                    <SelectValue />
+                                                </SelectTrigger>
+                                                <SelectContent>
+                                                    <SelectItem value="Todo">Todo</SelectItem>
+                                                    <SelectItem value="In Progress">In Progress</SelectItem>
+                                                    <SelectItem value="Done">Done</SelectItem>
+                                                </SelectContent>
+                                            </Select>
+                                          </div>
+                                          <UploadFileDialog taskName={task.name} />
+                                       </div>
                                     </Card>
                                   ))}
                                 </div>
@@ -775,5 +812,3 @@ export default function DashboardPage() {
     </div>
   );
 }
-
-    

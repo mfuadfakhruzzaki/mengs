@@ -25,7 +25,10 @@ import {
   Search,
   Settings,
   GraduationCap,
-  Check
+  Check,
+  FileUp,
+  MoreVertical,
+  Upload
 } from 'lucide-react';
 
 import { UserNav } from '@/components/user-nav';
@@ -59,6 +62,9 @@ import { Calendar } from '@/components/ui/calendar';
 import { cn } from '@/lib/utils';
 import { format } from 'date-fns';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem } from '@/components/ui/dropdown-menu';
+import { Label } from '@/components/ui/label';
 
 const semesters = [
   {
@@ -82,6 +88,14 @@ const semesters = [
 ];
 
 const allCourses = semesters.flatMap(s => s.courses);
+
+const tasks = [
+    { id: 't1', name: 'Problem Set 1', course: 'Calculus II', due: '2024-09-15', priority: 'High', status: 'Todo' },
+    { id: 't2', name: 'Lab Report 1', course: 'University Physics I', due: '2024-09-20', priority: 'High', status: 'Todo' },
+    { id: 't3', name: 'Reading Quiz', course: 'Intro to CS', due: '2024-09-22', priority: 'Medium', status: 'In Progress' },
+    { id: 't4', name: 'Project Proposal', course: 'Data Structures', due: '2024-10-01', priority: 'High', status: 'Todo' },
+    { id: 't5', name: 'Midterm Exam Prep', course: 'Calculus II', due: '2024-10-15', priority: 'Low', status: 'Done' },
+];
 
 const AddTaskFormSchema = z.object({
   title: z.string().min(1, "Judul tidak boleh kosong."),
@@ -167,7 +181,7 @@ function AddTaskForm({ onOpenChange }: { onOpenChange: (open: boolean) => void }
             name="dueDate"
             render={({ field }) => (
               <FormItem>
-                <FormLabel className="block pb-2">Tenggat Waktu</FormLabel>
+                <FormLabel className="block pb-2.5">Tenggat Waktu</FormLabel>
                 <Popover>
                   <PopoverTrigger asChild>
                     <FormControl>
@@ -208,7 +222,7 @@ function AddTaskForm({ onOpenChange }: { onOpenChange: (open: boolean) => void }
             name="priority"
             render={({ field }) => (
               <FormItem>
-                <FormLabel className="block pb-2">Prioritas</FormLabel>
+                <FormLabel className="block pb-2.5">Prioritas</FormLabel>
                  <Select onValueChange={field.onChange} defaultValue={field.value}>
                   <FormControl>
                     <SelectTrigger>
@@ -263,6 +277,35 @@ function AddTaskDialog() {
       </DialogContent>
     </Dialog>
   );
+}
+
+function UploadFileDialog({ taskName }: { taskName: string }) {
+    const [open, setOpen] = React.useState(false);
+    return (
+      <Dialog open={open} onOpenChange={setOpen}>
+        <DialogTrigger asChild>
+          <Button variant="outline" size="sm"><FileUp className="mr-2 h-4 w-4"/>Upload File</Button>
+        </DialogTrigger>
+        <DialogContent className="sm:max-w-[480px]">
+          <DialogHeader>
+            <DialogTitle>Upload Lampiran</DialogTitle>
+            <DialogDescription>
+              Upload file untuk tugas: <span className="font-semibold">{taskName}</span>
+            </DialogDescription>
+          </DialogHeader>
+          <div className="grid gap-4 py-4">
+            <div className="grid w-full max-w-sm items-center gap-1.5">
+              <Label htmlFor="file">File</Label>
+              <Input id="file" type="file" />
+            </div>
+          </div>
+          <DialogFooter>
+            <DialogClose asChild><Button type="button" variant="secondary">Batal</Button></DialogClose>
+            <Button type="submit"><Upload className="mr-2 h-4 w-4" />Upload</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+    );
 }
 
 export default function TugasPage() {
@@ -394,9 +437,121 @@ export default function TugasPage() {
                         <CardDescription>Lihat dan kelola tugas yang harus dikerjakan.</CardDescription>
                     </CardHeader>
                     <CardContent>
-                        <div className="text-center py-10">
-                            <p className="text-muted-foreground">Belum ada tugas. Silakan tambahkan tugas baru.</p>
-                        </div>
+                        {tasks.length > 0 ? (
+                            <>
+                                <div className="hidden md:block">
+                                  <Table>
+                                      <TableHeader>
+                                          <TableRow>
+                                              <TableHead>Tugas</TableHead>
+                                              <TableHead>Mata Kuliah</TableHead>
+                                              <TableHead>Tenggat</TableHead>
+                                              <TableHead>Prioritas</TableHead>
+                                              <TableHead>Status</TableHead>
+                                              <TableHead>Lampiran</TableHead>
+                                              <TableHead><span className="sr-only">Aksi</span></TableHead>
+                                          </TableRow>
+                                      </TableHeader>
+                                      <TableBody>
+                                          {tasks.map(task => (
+                                              <TableRow key={task.id}>
+                                                  <TableCell className="font-medium">{task.name}</TableCell>
+                                                  <TableCell>{task.course}</TableCell>
+                                                  <TableCell>{task.due}</TableCell>
+                                                  <TableCell>
+                                                      <span className={`px-2 py-1 text-xs rounded-full ${task.priority === 'High' ? 'bg-red-200 text-red-800 dark:bg-red-900 dark:text-red-200' : task.priority === 'Medium' ? 'bg-yellow-200 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200' : 'bg-green-200 text-green-800 dark:bg-green-900 dark:text-green-200'}`}>{task.priority}</span>
+                                                  </TableCell>
+                                                  <TableCell>
+                                                      <Select defaultValue={task.status}>
+                                                          <SelectTrigger className="w-[120px] h-8 text-xs">
+                                                              <SelectValue />
+                                                          </SelectTrigger>
+                                                          <SelectContent>
+                                                              <SelectItem value="Todo">Todo</SelectItem>
+                                                              <SelectItem value="In Progress">In Progress</SelectItem>
+                                                              <SelectItem value="Done">Done</SelectItem>
+                                                          </SelectContent>
+                                                      </Select>
+                                                  </TableCell>
+                                                   <TableCell>
+                                                      <UploadFileDialog taskName={task.name} />
+                                                  </TableCell>
+                                                  <TableCell>
+                                                      <DropdownMenu>
+                                                          <DropdownMenuTrigger asChild>
+                                                              <Button variant="ghost" className="h-8 w-8 p-0">
+                                                                  <span className="sr-only">Buka menu</span>
+                                                                  <MoreVertical className="h-4 w-4" />
+                                                              </Button>
+                                                          </DropdownMenuTrigger>
+                                                          <DropdownMenuContent align="end">
+                                                              <DropdownMenuItem>Edit</DropdownMenuItem>
+                                                              <DropdownMenuItem>Tandai Selesai</DropdownMenuItem>
+                                                              <DropdownMenuItem className="text-red-600">Hapus</DropdownMenuItem>
+                                                          </DropdownMenuContent>
+                                                      </DropdownMenu>
+                                                  </TableCell>
+                                              </TableRow>
+                                          ))}
+                                      </TableBody>
+                                  </Table>
+                                </div>
+                                <div className="grid gap-4 md:hidden">
+                                  {tasks.map((task) => (
+                                    <Card key={task.id} className="p-4">
+                                      <div className="flex justify-between items-start">
+                                        <div className="flex-1">
+                                            <p className="font-medium">{task.name}</p>
+                                            <p className="text-sm text-muted-foreground">{task.course}</p>
+                                        </div>
+                                        <DropdownMenu>
+                                            <DropdownMenuTrigger asChild>
+                                                <Button variant="ghost" className="h-8 w-8 p-0">
+                                                    <span className="sr-only">Buka menu</span>
+                                                    <MoreVertical className="h-4 w-4" />
+                                                </Button>
+                                            </DropdownMenuTrigger>
+                                            <DropdownMenuContent align="end">
+                                                <DropdownMenuItem>Edit</DropdownMenuItem>
+                                                <DropdownMenuItem>Tandai Selesai</DropdownMenuItem>
+                                                <DropdownMenuItem className="text-red-600">Hapus</DropdownMenuItem>
+                                            </DropdownMenuContent>
+                                        </DropdownMenu>
+                                      </div>
+                                      <div className="flex items-center justify-between mt-4 text-sm">
+                                        <div>
+                                          <p className="text-muted-foreground">Tenggat</p>
+                                          <p>{task.due}</p>
+                                        </div>
+                                        <div>
+                                          <p className="text-muted-foreground">Prioritas</p>
+                                          <span className={`px-2 py-1 text-xs rounded-full ${task.priority === 'High' ? 'bg-red-200 text-red-800 dark:bg-red-900 dark:text-red-200' : task.priority === 'Medium' ? 'bg-yellow-200 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200' : 'bg-green-200 text-green-800 dark:bg-green-900 dark:text-green-200'}`}>{task.priority}</span>
+                                        </div>
+                                      </div>
+                                       <div className="flex items-center justify-between mt-4">
+                                          <div className="w-28">
+                                            <Select defaultValue={task.status}>
+                                                <SelectTrigger className="h-8 text-xs">
+                                                    <SelectValue />
+                                                </SelectTrigger>
+                                                <SelectContent>
+                                                    <SelectItem value="Todo">Todo</SelectItem>
+                                                    <SelectItem value="In Progress">In Progress</SelectItem>
+                                                    <SelectItem value="Done">Done</SelectItem>
+                                                </SelectContent>
+                                            </Select>
+                                          </div>
+                                          <UploadFileDialog taskName={task.name} />
+                                       </div>
+                                    </Card>
+                                  ))}
+                                </div>
+                            </>
+                        ) : (
+                            <div className="text-center py-10">
+                                <p className="text-muted-foreground">Belum ada tugas. Silakan tambahkan tugas baru.</p>
+                            </div>
+                        )}
                     </CardContent>
                 </Card>
             </div>
@@ -405,5 +560,3 @@ export default function TugasPage() {
     </div>
   );
 }
-
-    
