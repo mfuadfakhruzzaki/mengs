@@ -100,28 +100,28 @@ export default function DashboardPage() {
             <div className='w-full'>
               <Link
                 href="#"
-                className="flex items-center gap-3 rounded-lg bg-accent px-3 py-2 text-primary transition-all hover:text-primary"
+                className="flex items-center gap-3 rounded-lg bg-primary px-3 py-2 text-primary-foreground transition-all hover:bg-primary/90"
               >
                 <Home className="h-4 w-4" />
                 Dashboard
               </Link>
               <Link
                 href="#"
-                className="flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary"
+                className="flex items-center gap-3 rounded-lg px-3 py-2 text-foreground transition-all hover:bg-muted"
               >
                 <Book className="h-4 w-4" />
                 Semester
               </Link>
               <Link
                 href="#"
-                className="flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary"
+                className="flex items-center gap-3 rounded-lg px-3 py-2 text-foreground transition-all hover:bg-muted"
               >
                 <ListTodo className="h-4 w-4" />
                 Tugas
               </Link>
               <Link
                 href="#"
-                className="flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary"
+                className="flex items-center gap-3 rounded-lg px-3 py-2 text-foreground transition-all hover:bg-muted"
               >
                 <Calendar className="h-4 w-4" />
                 Kalender
